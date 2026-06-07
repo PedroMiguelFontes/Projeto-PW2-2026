@@ -1,0 +1,1 @@
+{"name":"projeto-pw2-2026","version":"1.0.0","description":"","main":"app.js","scripts":{"start":"node app.js"},"author":"","license":"ISC","dependencies":{"bcryptjs":"^3.0.3","dotenv":"^17.4.2","express-rate-limit":"^8.5.2","jsonwebtoken":"^9.0.3","mongoose":"^9.6.3"}}
