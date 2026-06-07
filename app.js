@@ -57,7 +57,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/categorias', categoriasRoutes);
 app.use('/api/ocorrencias', ocorrenciasRoutes);
 app.use('/api/ocorrencias/:id/comentarios', comentariosRoutes);
-app.use('/api/historicos', historicosRoutes);
 app.use('/api/ocorrencias/:id/imagens', imagensRoutes); 
 app.use('/api/estados', estadosRoutes);
 app.use('/api/tratamentos', tratamentosRoutes);
