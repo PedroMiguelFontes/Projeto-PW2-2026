@@ -57,11 +57,15 @@ const createOcorrencia = async (req, res) => {
         if (req.loggedUserRole !== 'Utilizador') {
             return res.status(403).json({ message: "Apenas utilizadores podem criar ocorrências" });
         }
-        const { titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao} = req.body;
+
+        const lastOcorrencia = await Ocorrencia.findOne().sort({ id: -1 });
+        const nextId = (lastOcorrencia?.id || 0) + 1;
+
+        const {titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao} = req.body;
         if (!titulo || !descricao || !categoria_id || !user_id || !estado_id || !prioridade || !edificio || !zona || !latitude || !longitude) {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
-        const newOcorrencia = new Ocorrencia({ titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
+        const newOcorrencia = new Ocorrencia({ id: nextId, titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
         await newOcorrencia.save();
         return res.status(201).json(newOcorrencia);
     } catch (error) {
@@ -74,7 +78,7 @@ const updateOcorrencia = async (req, res) => {
         if (req.loggedUserRole !== 'Funcionario') {
             return res.status(403).json({ message: "Apenas funcionários podem atualizar ocorrências" });
         }
-
+        const query = resolveOcorrenciaQuery(req.params.id);
         const { titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao } = req.body;
         const ocorrencia = await Ocorrencia.findOne(query);
         if (!ocorrencia) {
@@ -93,7 +97,8 @@ const updatePartialOcorrencia = async (req, res) => {
         if (req.loggedUserRole !== 'Funcionario') {
             return res.status(403).json({ message: "Apenas funcionários podem atualizar ocorrencias" });
         }
-        const ocorrencia = await Ocorrencia.findById(req.params.id);
+        const query = resolveOcorrenciaQuery(req.params.id);
+        const ocorrencia = await Ocorrencia.findOne(query);
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
@@ -122,12 +127,12 @@ const deleteOcorrencia = async (req, res) => {
         if (req.loggedUserRole !== 'Admin') {
             return res.status(403).json({ message: "Apenas admins podem apagar ocorrencias" });
         }
-        const ocorrencia = await Ocorrencia.findById(req.params.id);
+        const query = resolveOcorrenciaQuery(req.params.id);
+        const ocorrencia = await Ocorrencia.findOneAndDelete(query);
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
-        await ocorrencia.remove();
-        return res.status(200).json({ message: "Ocorrência apagada com sucesso" });
+        return res.status(204).json({ message: "Ocorrência apagada com sucesso" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

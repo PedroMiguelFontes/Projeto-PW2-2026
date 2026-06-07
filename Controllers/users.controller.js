@@ -196,7 +196,7 @@ const deleteUser = async (req, res) => {
         if (!deletedUser) {
             return res.status(404).json({ message: "Utilizador não existe" });
         }
-        res.json({ message: "Utilizador eliminado com sucesso" });
+        return res.status(204).json({ message: "Utilizador eliminado com sucesso" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
