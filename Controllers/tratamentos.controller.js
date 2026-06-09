@@ -59,6 +59,10 @@ const createTratamento = async (req, res) => {
         if (req.loggedUserRole !== 'Funcionario') {
             return res.status(403).json({ message: "Apenas funcionários podem criar tratamentos" });
         }
+        if (req.loggedUserEstado !=='Ativo') {
+            return res.status(403).json({message:"Estás suspenso e não podes criar tratamentos"})
+        }
+
         const { ocorrencia_id, funcionario_id, descricao, data_prevista, data_real } = req.body;
         if (!ocorrencia_id || !funcionario_id || !descricao || !data_prevista || !data_real) {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
@@ -80,6 +84,9 @@ const updateTratamento = async (req, res) => {
         } 
         if (req.loggedUserRole !== 'Funcionario') {
             return res.status(403).json({ message: "Apenas funcionários podem atualizar tratamentos" });
+        }
+        if (req.loggedUserEstado !=='Ativo') {
+            return res.status(403).json({message:"Estás suspenso e não podes atualizar tratamentos"})
         }
 
         const query= resolveTratamentoQuery(req.params.id);
@@ -105,6 +112,9 @@ const updatePartialTratamento = async (req, res) => {
         if (req.loggedUserRole !== 'Funcionario') {
             return res.status(403).json({ message: "Apenas funcionários podem atualizar tratamentos" });
         }
+        if (req.loggedUserEstado !=='Ativo') {
+            return res.status(403).json({message:"Estás suspenso e não podes atualizar tratamentos"})
+        }
         const query = resolveTratamentoQuery(req.params.id);
         const tratamento = await Tratamento.findOne(query);
         if (!tratamento) {
@@ -128,6 +138,10 @@ const deleteTratamento = async (req, res) => {
         if (req.loggedUserRole !== 'Admin') {
             return res.status(403).json({ message: "Apenas admins podem apagar tratamentos" });
         }
+        if (req.loggedUserEstado !=='Ativo') {
+            return res.status(403).json({message:"Estás suspenso e não podes apagar tratamentos"})
+        }
+
         const query = resolveTratamentoQuery(req.params.id);
         const tratamento = await Tratamento.findOneAndDelete(query);
         if (!tratamento) {

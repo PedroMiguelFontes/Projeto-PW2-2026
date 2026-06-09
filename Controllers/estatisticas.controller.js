@@ -1,18 +1,26 @@
 const mongoose = require('mongoose');
-import Estatistica from '../Models/estatisticas.schema.js';
+const Estatistica = require('../Models/estatisticas.schema');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
 
 const getEstatisticas = async (req, res) => {
-    if (req.LoggedUserRole!='Admin') {
-        return res.status(401).json({ error: 'Acesso não autorizado' });
+    try {
+        console.log('Role:', req.loggedUserRole);
+        if (req.loggedUserRole !== 'Admin') {
+            return res.status(403).json({ error: 'Acesso não autorizado' });
+        }
+        const estatisticas=await Estatistica.find()
+        res.status(200).json(estatisticas);
     }
-    res.status(200).json(estatisticas);
+    catch (error) {
+         res.status(500).json({ message: error.message });
+    }
 };
 
 const updateEstatisticas = async (req,res) => {
-    if (req.LoggedUserRole!='Admin') {
-        return res.status(401).json({ error: 'Acesso não autorizado' });
+ 
+    if (req.loggedUserRole !== 'Admin') {
+        return res.status(403).json({ error: 'Acesso não autorizado' });
     }
     const { totalOcorrencias, porEstado } = req.body;
     if (totalOcorrencias !== undefined) {
@@ -24,8 +32,8 @@ const updateEstatisticas = async (req,res) => {
 }
 
 const updatePartialEstatisticas = async (req,res) => {
-    if (req.LoggedUserRole!='Admin') {
-        return res.status(401).json({ error: 'Acesso não autorizado' });
+    if (req.loggedUserRole !== 'Admin') {
+        return res.status(403).json({ error: 'Acesso não autorizado' });
     }
     const { totalOcorrencias, porEstado } = req.body;
     if (totalOcorrencias !== undefined) {

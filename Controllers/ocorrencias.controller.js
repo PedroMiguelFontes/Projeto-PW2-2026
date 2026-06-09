@@ -57,6 +57,9 @@ const createOcorrencia = async (req, res) => {
         if (req.loggedUserRole !== 'Utilizador') {
             return res.status(403).json({ message: "Apenas utilizadores podem criar ocorrências" });
         }
+        if (req.loggedUserEstado !=='Ativo') {
+            return res.status(403).json({message:"Estás suspenso e não podes criar ocorrencias"})
+        }
 
         const lastOcorrencia = await Ocorrencia.findOne().sort({ id: -1 });
         const nextId = (lastOcorrencia?.id || 0) + 1;
@@ -78,6 +81,9 @@ const updateOcorrencia = async (req, res) => {
         if (req.loggedUserRole !== 'Funcionario') {
             return res.status(403).json({ message: "Apenas funcionários podem atualizar ocorrências" });
         }
+        if (req.loggedUserEstado !=='Ativo') {
+            return res.status(403).json({message:"Estás suspenso e não podes atualizar ocorrencias"})
+        }
         const query = resolveOcorrenciaQuery(req.params.id);
         const { titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao } = req.body;
         const ocorrencia = await Ocorrencia.findOne(query);
@@ -96,6 +102,9 @@ const updatePartialOcorrencia = async (req, res) => {
     try {
         if (req.loggedUserRole !== 'Funcionario') {
             return res.status(403).json({ message: "Apenas funcionários podem atualizar ocorrencias" });
+        }
+        if (req.loggedUserEstado !=='Ativo') {
+            return res.status(403).json({message:"Estás suspenso e não podes atualizar ocorrencias"})
         }
         const query = resolveOcorrenciaQuery(req.params.id);
         const ocorrencia = await Ocorrencia.findOne(query);
@@ -126,6 +135,9 @@ const deleteOcorrencia = async (req, res) => {
     try {
         if (req.loggedUserRole !== 'Admin') {
             return res.status(403).json({ message: "Apenas admins podem apagar ocorrencias" });
+        }
+        if (req.loggedUserEstado !=='Ativo') {
+            return res.status(403).json({message:"Estás suspenso e não podes apagar ocorrencias"})
         }
         const query = resolveOcorrenciaQuery(req.params.id);
         const ocorrencia = await Ocorrencia.findOneAndDelete(query);

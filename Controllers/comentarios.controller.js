@@ -1,20 +1,23 @@
+const mongoose = require('mongoose');
 const Comentario = require('../Models/comentarios.schema');
 
-// Listar todos os comentários de uma ocorrência específica
+
 exports.getComentariosByOcorrencia = async (req, res) => {
     try {
-        const { id } = req.params; // ID da ocorrência vindo da rota pai
+        const { id } = req.params; 
         const comentarios = await Comentario.find({ ocorrencia_id: id });
+        if (!comentarios) {
+            return res.status(404).json({message: 'Não existem comentarios dessa ocorrencia'})
+        }
         res.status(200).json(comentarios);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao procurar comentários', error: error.message });
     }
 };
 
-// Criar um novo comentário para uma ocorrência
 exports.createComentario = async (req, res) => {
     try {
-        const { id } = req.params; // ID da ocorrência
+        const { id } = req.params; 
         const { user_id, texto } = req.body;
 
         const novoComentario = new Comentario({
@@ -30,7 +33,6 @@ exports.createComentario = async (req, res) => {
     }
 };
 
-// Eliminar um comentário
 exports.deleteComentario = async (req, res) => {
     try {
         const { comentarioId } = req.params;
@@ -46,7 +48,6 @@ exports.deleteComentario = async (req, res) => {
     }
 };
 
-// Atualizar estado do comentário (ex: para moderar/marcar como Indevido)
 exports.updateEstadoComentario = async (req, res) => {
     try {
         const { comentarioId } = req.params;
