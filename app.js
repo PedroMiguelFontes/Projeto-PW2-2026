@@ -12,7 +12,6 @@ const authRoutes = require('./Routes/auth.route');
 const categoriasRoutes = require('./Routes/categorias.route');
 const ocorrenciasRoutes = require('./Routes/ocorrencias.route');
 const comentariosRoutes = require('./Routes/comentarios.route');
-const historicosRoutes = require('./Routes/historicos.route');
 const imagensRoutes = require('./Routes/imagens.route');
 const estadosRoutes = require('./Routes/estados.route');
 const tratamentosRoutes = require('./Routes/tratamentos.route');
@@ -60,7 +59,7 @@ app.use('/api/ocorrencias/:id/comentarios', comentariosRoutes);
 app.use('/api/ocorrencias/:id/imagens', imagensRoutes); 
 app.use('/api/estados', estadosRoutes);
 app.use('/api/tratamentos', tratamentosRoutes);
-//app.use('/api/estatisticas', estatisticasRoutes);
+app.use('/api/estatisticas', estatisticasRoutes);
 
 
 // Start server
