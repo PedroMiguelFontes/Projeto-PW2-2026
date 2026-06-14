@@ -65,6 +65,14 @@ const createUser = async (req, res) => {
             return res.status(400).json({ message: "Email já está em uso" });
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                message: "Formato de email inválido"
+            });
+        }
+
         const lastUser = await User.findOne().sort({ id: -1 });
         const nextId = (lastUser?.id || 0) + 1;
 
@@ -78,9 +86,6 @@ const createUser = async (req, res) => {
             estado:'Ativo'
         });
         
-        /*if (tipo!=='Admin'&&tipo!=='Funcionario'&&tipo!=='Utilizador') {
-            return res.status(400).json({message:`${tipo} não é suportado`})
-        }*/
 
         console.log(req.body);
         console.log(tipo);
@@ -92,7 +97,6 @@ const createUser = async (req, res) => {
         
         res.status(201).json(userResponse);
     } catch (error) {
-
         if (error.name === 'ValidationError') {
         return res.status(400).json({
             message: error.message
