@@ -54,9 +54,9 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
     try {
-        const { nome, email, password } = req.body;
+        const { nome, email, password, tipo } = req.body;
 
-        if (!nome || !email || !password) {
+        if (!nome || !email || !password || !tipo) {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
 
@@ -74,16 +74,32 @@ const createUser = async (req, res) => {
             nome,
             email,
             password: hashedPassword,
-            tipo: 'Utilizador',
+            tipo,
             estado:'Ativo'
         });
         
+        /*if (tipo!=='Admin'&&tipo!=='Funcionario'&&tipo!=='Utilizador') {
+            return res.status(400).json({message:`${tipo} não é suportado`})
+        }*/
+
+        console.log(req.body);
+        console.log(tipo);
+        console.log(newUser);
+
         const savedUser = await newUser.save();
         const userResponse = savedUser.toObject();
         delete userResponse.password;
         
         res.status(201).json(userResponse);
     } catch (error) {
+
+        if (error.name === 'ValidationError') {
+        return res.status(400).json({
+            message: error.message
+        });
+    }
+
+
         res.status(500).json({ message: error.message });
     }
 };

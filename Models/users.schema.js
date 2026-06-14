@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     nome: {
         type: String,
         required: true,
-        maxlength: 100
+        maxlength: 100,
     },
     email: {
         type: String,
@@ -24,8 +24,11 @@ const userSchema = new mongoose.Schema({
     },
     tipo: {
         type: String,
-        enum: ['Funcionario', 'Utilizador', 'Admin'],
-        default: 'Utilizador'
+        required: true,
+        enum: { 
+            values: ['Funcionario', 'Utilizador', 'Admin'],
+            message: '{VALUE} is not suported'
+        }
     },
     estado: {
         type: String,
