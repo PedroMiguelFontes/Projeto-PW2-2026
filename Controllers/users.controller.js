@@ -232,22 +232,24 @@ const validateFuncionario = async (req,res) => {
         const query = resolveUserQuery(req.params.id);
         const updatedUser = await User.findOne(query).select('-password');
 
+        if (!updatedUser) {
+           return res.status(404).json({ message: "Funcionário não existe" });
+        }
+
         if (updatedUser.tipo!=='Funcionario') {
             return res.status(400).json({message: "Este utilizador não é um funcionário"})
         }
-        if (!updatedUser) {
-           return res.status(404).json({ message: "Funcionário não existe" });
-        } else if (updatedUser.estado === 'Ativo') {
+
+        if (updatedUser.estado === 'Ativo') {
            return res.status(401).json({ message: "Funcionário já está validado" });
-        } else {
-            await User.findOneAndUpdate(query, { estado: 'Ativo' }, { new: true });
-            return res.status(200).json({message: "Utilizador suspenso com sucesso"});
         } 
+        
+        await User.findOneAndUpdate(query, { estado: 'Ativo' }, { new: true });
+        return res.status(200).json({message: "Utilizador suspenso com sucesso"});
 
 
     }
     catch (error) {
-        console.log(error)
         res.status(500).json({message: error.message})
     }
 }
