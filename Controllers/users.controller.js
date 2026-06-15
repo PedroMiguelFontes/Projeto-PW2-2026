@@ -219,12 +219,27 @@ const updatePartialUser = async (req, res) => {
         if (!updatedUser) {
             return res.status(404).json({ message: "Utilizador não existe" });
         }
-
         res.json(updatedUser);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
+const validateFuncionario = async (req,res) => {
+    try {
+        if (req.loggedUserRole!=='Admin') {
+            return res.status(403).json({message: "Só os admins podem validar funcionários"})
+        }        
+
+        if (req.params.role!=='Funcionario') {
+            return res.status(401).json({message: "Este utilizador não é um funcionário"})
+        }
+
+    }
+    catch (error) {
+        res.status(500).json({message: error.message})
+    }
+}
 
 const deleteUser = async (req, res) => {
     try {
@@ -251,5 +266,6 @@ module.exports = {
     updatePartialUser,
     deleteUser,
     suspendUser,
-    unsuspendUser
+    unsuspendUser,
+    validateFuncionario
 };
