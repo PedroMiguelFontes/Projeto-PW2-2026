@@ -55,7 +55,6 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
     try {
         const { nome, email, password, tipo } = req.body;
-
         if (!nome || !email || !password || !tipo) {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
@@ -63,6 +62,11 @@ const createUser = async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email já está em uso" });
+        }
+
+        if ((tipo === 'Utilizador') && !email.endsWith('@esmad.ipp.pt')) {
+                return res.status(400).json({message: 'Utilizadores e Funcionários devem usar email institucional (@esmad.ipp.pt)'
+            });
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

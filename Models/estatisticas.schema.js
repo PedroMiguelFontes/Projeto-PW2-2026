@@ -9,7 +9,7 @@ const estatisticasSchema = new mongoose.Schema({
         aberta: {
             type: Number,
             default: 0
-        },
+        },      
         em_progresso: {
             type: Number,
             default: 0
