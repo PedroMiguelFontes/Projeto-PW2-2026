@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-let ocorrenciaSchema = require('../Models/ocorrencias.schema')
+let ocorrenciasSchema = require('../Models/ocorrencias.schema')
 
 let ocorrencias =
 [
