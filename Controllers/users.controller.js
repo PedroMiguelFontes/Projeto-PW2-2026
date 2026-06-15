@@ -65,7 +65,7 @@ const createUser = async (req, res) => {
         }
 
         if ((tipo === 'Utilizador') && !email.endsWith('@esmad.ipp.pt')) {
-                return res.status(400).json({message: 'Utilizadores e Funcionários devem usar email institucional (@esmad.ipp.pt)'
+                return res.status(400).json({message: 'Estudantes/Docentes devem usar email institucional (@esmad.ipp.pt)'
             });
         }
 
