@@ -144,7 +144,7 @@ const deleteOcorrencia = async (req, res) => {
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
-        return res.status(204).json({ message: "Ocorrência apagada com sucesso" });
+        return res.status(200).json({ message: "Ocorrência apagada com sucesso" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

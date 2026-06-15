@@ -245,7 +245,7 @@ const validateFuncionario = async (req,res) => {
         } 
         
         await User.findOneAndUpdate(query, { estado: 'Ativo' }, { new: true });
-        return res.status(200).json({message: "Utilizador suspenso com sucesso"});
+        return res.status(200).json({message: " Funcionario validado com sucesso"});
 
 
     }
@@ -264,7 +264,7 @@ const deleteUser = async (req, res) => {
         if (!deletedUser) {
             return res.status(404).json({ message: "Utilizador não existe" });
         }
-        return res.status(204).json({ message: "Utilizador eliminado com sucesso" });
+        return res.status(200).json({ message: "Utilizador eliminado com sucesso" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

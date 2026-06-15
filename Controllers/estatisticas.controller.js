@@ -5,17 +5,34 @@ const verifyToken = require('./auth.controller').verifyToken;
 
 const getEstatisticas = async (req, res) => {
     try {
-        console.log('Role:', req.loggedUserRole);
         if (req.loggedUserRole !== 'Admin') {
             return res.status(403).json({ error: 'Acesso não autorizado' });
         }
-        const estatisticas=await Estatistica.find()
-        res.status(200).json(estatisticas);
-    }
-    catch (error) {
-         res.status(500).json({ message: error.message });
+        
+        const Ocorrencia = require('../Models/ocorrencia.model');
+        const totalOcorrencias = await Ocorrencia.countDocuments();
+
+        const porEstado = await Ocorrencia.aggregate([
+            {
+                $group: {
+                    _id: '$estado',
+                    total: { $sum: 1 }
+                }
+            }
+        ]);
+
+        res.status(200).json({
+            totalOcorrencias,
+            porEstado
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
     }
 };
+
 
 const updateEstatisticas = async (req,res) => {
  

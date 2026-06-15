@@ -147,7 +147,7 @@ const deleteTratamento = async (req, res) => {
         if (!tratamento) {
             return res.status(404).json({ message: "Tratamento não encontrado" });
         }
-        return res.status(204).json({ message: "Tratamento apagado com sucesso" });
+        return res.status(200).json({ message: "Tratamento apagado com sucesso" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
