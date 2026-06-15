@@ -59,12 +59,15 @@ const createUser = async (req, res) => {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
 
-        const nomeRegex = /^[A-Za-zÀ-ÿ\s]+$/;
+        if (typeof nome !== 'string') {
+            return res.status(400).json({message: 'O nome deve ser uma string'});
+        }
 
+
+        const nomeRegex = /^[A-Za-zÀ-ÿ\s]+$/;
+        
         if (!nomeRegex.test(nome.trim())) {
-            return res.status(400).json({
-                message: 'O nome deve conter apenas letras'
-            });
+            return res.status(400).json({message: 'O nome deve conter apenas letras'});
         }
 
 
