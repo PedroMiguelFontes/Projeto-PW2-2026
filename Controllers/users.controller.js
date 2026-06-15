@@ -59,6 +59,15 @@ const createUser = async (req, res) => {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
 
+        const nomeRegex = /^[A-Za-zÀ-ÿ\s]+$/;
+
+        if (!nomeRegex.test(nome.trim())) {
+            return res.status(400).json({
+                message: 'O nome deve conter apenas letras'
+            });
+        }
+
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email já está em uso" });
