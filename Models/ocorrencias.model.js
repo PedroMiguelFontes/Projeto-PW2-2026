@@ -8,6 +8,4 @@ let ocorrencias =
     {"id":3, "titulo":"Entupimento no esgoto", "descricao":"O esgoto do prédio está entupido, causando mau cheiro e risco de transbordamento.", "categoria_id":3, "user_id":4, "estado_id":2, "prioridade":1, "edificio":"Continente", "zona":"Centro", "latitude": 80.0273, "longitude": 1.4917, "data_registo":"2024-06-08T10:00:00Z", "data_resolucao":null}
 ]
 
-module.exports = mongoose.model(
-    'Ocorrencia',ocorrenciaSchema,'Ocorrencias'
-);
+module.exports = mongoose.model('Ocorrencia',ocorrenciasSchema,'Ocorrencias');
