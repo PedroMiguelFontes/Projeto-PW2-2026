@@ -6,4 +6,4 @@ let imagens =
     {"id":4, "ocorrencia_id":3, "url":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvskjwueFuDzErCgs8ChAFzldAbbz1vggeFw&s"}
 ]
 
-export default imagens;
+module.exports = imagens;

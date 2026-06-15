@@ -4,4 +4,4 @@ let tratamentos = [
     {"id":3, "ocorrencia_id":1, "funcionario_id":3, "descricao":"O funcionário Carlos Oliveira foi designado para resolver o problema de vazamento no telhado. Ele irá inspecionar o telhado, identificar a fonte do vazamento e realizar os reparos necessários para evitar infiltrações futuras.", "data_prevista":"2024-06-15T10:00:00Z", "data_real":"2024-06-01T12:00:00Z"}
 ]
 
-export default tratamentos;
+module.exports = tratamentos;

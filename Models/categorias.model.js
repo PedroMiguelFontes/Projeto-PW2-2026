@@ -5,4 +5,4 @@ let categorias =
     {"id":3, "nome":"Canalização", "descricao":"Entupimentos, vazamentos, problemas com encanamento ou esgoto."}
 ] 
 
-export default categorias;
+module.exports = categorias;

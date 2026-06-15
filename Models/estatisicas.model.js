@@ -7,4 +7,4 @@ let estatisticas= {
     }
 }
 
-export default estatisticas;
+module.exports = estatisticas;

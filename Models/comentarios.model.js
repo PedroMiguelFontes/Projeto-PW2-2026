@@ -5,4 +5,4 @@ let comentarios =
     {"id":3, "ocorrencia_id":3, "user_id":5, "texto":"Acho que a administração deveria ser mais proativa em resolver esses problemas. Não é justo para os moradores."},
 ]
 
-export default comentarios;
+module.exports = comentarios;

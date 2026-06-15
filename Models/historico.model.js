@@ -1,3 +1,3 @@
 let historico = []
 
-export default historico
+module.exports = historico

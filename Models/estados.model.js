@@ -5,4 +5,4 @@ let estados =
     {"id":3,"nome":"Rejeitada"},
 ]
 
-export default estados;
+module.exports = estados;
