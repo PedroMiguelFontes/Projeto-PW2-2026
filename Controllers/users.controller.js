@@ -120,6 +120,10 @@ const updateUser = async (req, res) => {
         const { nome, email, password, tipo, estado } = req.body;
         const updateData = { nome, email, tipo, estado, updated_at: Date.now() };
         
+        if (typeof nome !=='string') {
+            res.status(400)
+        }
+
         if (password) {
             updateData.password = await bcrypt.hash(password, 10);
         }
