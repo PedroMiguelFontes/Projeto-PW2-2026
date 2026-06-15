@@ -1,3 +1,5 @@
+const mongoose = require('mongoose')
+
 let ocorrencias =
 [
     {"id":1, "titulo":"Vazamento no telhado", "descricao":"Há um vazamento no telhado do prédio, causando infiltração e danos à estrutura.", "categoria_id":1, "user_id":2, "estado_id":1, "prioridade":3, "edificio": "Aldi", "zona":"Norte", "latitude": 41.1579, "longitude": -8.6291, "data_registo":"2024-06-01T09:00:00Z", "data_resolucao":null},
