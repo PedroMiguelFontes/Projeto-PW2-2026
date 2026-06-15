@@ -59,4 +59,4 @@ const ocorrenciasSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Ocorrencia', ocorrenciasSchema, 'Ocorrencias');
+module.exports = ocorrenciasSchema;
