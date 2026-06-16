@@ -14,17 +14,34 @@ const getEstatisticas = async (req, res) => {
 
         const porEstado = await Ocorrencia.aggregate([
             {
+                $lookup: {
+                    from: 'Estados',
+                    localField: 'estado_id',
+                    foreignField: '_id',
+                    as: 'estado'
+                }
+            },
+            {
+                $unwind: '$estado'
+            },
+            {
                 $group: {
-                    _id: '$estado',
+                    _id: '$estado.nome',
                     total: { $sum: 1 }
                 }
             }
         ]);
 
-        res.status(200).json({
+        const estatisticas = {
             totalOcorrencias,
-            porEstado
+            porEstado: {}
+        };
+
+        porEstado.forEach(item => {
+            estatisticas.porEstado[item._id] = item.total;
         });
+
+        return res.status(200).json(estatisticas);
 
     } catch (error) {
         res.status(500).json({
