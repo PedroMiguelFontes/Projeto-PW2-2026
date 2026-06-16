@@ -22,7 +22,7 @@ const getEstatisticas = async (req, res) => {
                 $lookup: {
                     from: 'Estados',
                     localField: 'estado_id',
-                    foreignField: '_id',
+                    foreignField: 'id',
                     as: 'estado'
                 }
             },
