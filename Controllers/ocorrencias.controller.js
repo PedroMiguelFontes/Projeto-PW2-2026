@@ -68,6 +68,9 @@ const createOcorrencia = async (req, res) => {
         if (!titulo || !descricao || !categoria_id || !user_id || !estado_id || !prioridade || !edificio || !zona || !latitude || !longitude) {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
+
+
+
         const newOcorrencia = new Ocorrencia({ id: nextId, titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
         await newOcorrencia.save();
         return res.status(201).json(newOcorrencia);
@@ -133,17 +136,22 @@ const updatePartialOcorrencia = async (req, res) => {
 
 const deleteOcorrencia = async (req, res) => {
     try {
-        if (req.loggedUserRole !== 'Admin') {
-            return res.status(403).json({ message: "Apenas admins podem apagar ocorrencias" });
+        if (req.loggedUserRole == 'Funcionario') {
+            return res.status(403).json({ message: "Apenas utilizadores ou administradores podem apagar ocorrencias" });
         }
         if (req.loggedUserEstado !=='Ativo') {
             return res.status(403).json({message:"Estás suspenso e não podes apagar ocorrencias"})
         }
+        
         const query = resolveOcorrenciaQuery(req.params.id);
-        const ocorrencia = await Ocorrencia.findOneAndDelete(query);
+        const ocorrencia = await Ocorrencia.findOne(query);
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
+        if (req.loggedUserRole == 'Utilizador' && req.loggedUserId!==ocorrencia.user_id) {
+            return res.status(403).json({ message: "Apenas podes apagar ocorrencias que você criou" });
+        }
+
         return res.status(200).json({ message: "Ocorrência apagada com sucesso" });
     } catch (error) {
         return res.status(500).json({ message: error.message });

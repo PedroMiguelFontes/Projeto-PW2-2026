@@ -16,15 +16,18 @@ const ocorrenciasSchema = new mongoose.Schema({
         maxlength: 200
     },
     categoria_id: {
-        type:Number,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Categoria',
         required: true
     },
     user_id: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'User',
         required: true
     },
     estado_id: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Estado',
         required: true
     },
     prioridade: {
