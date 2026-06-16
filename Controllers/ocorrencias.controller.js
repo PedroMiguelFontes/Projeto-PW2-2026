@@ -143,15 +143,17 @@ const deleteOcorrencia = async (req, res) => {
             return res.status(403).json({message:"Estás suspenso e não podes apagar ocorrencias"})
         }
         
-        const query = resolveOcorrenciaQuery(req.params.id);
-        const ocorrencia = await Ocorrencia.findOne(query);
+        //const query = resolveOcorrenciaQuery(req.params.id);
+        const ocorrencia = await Ocorrencia.findOne({
+            id: parseInt(req.params.id)
+        });;
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
         if (req.loggedUserRole == 'Utilizador' && req.loggedUserId!==ocorrencia.user_id) {
             return res.status(403).json({ message: "Apenas podes apagar ocorrencias que você criou" });
         }
-
+        await ocorrencia.delete()
         return res.status(200).json({ message: "Ocorrência apagada com sucesso" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
