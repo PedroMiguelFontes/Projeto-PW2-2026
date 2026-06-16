@@ -8,8 +8,13 @@ const getEstatisticas = async (req, res) => {
         if (req.loggedUserRole !== 'Admin') {
             return res.status(403).json({ error: 'Acesso não autorizado' });
         }
-
+        
         const Ocorrencia = require('../Models/ocorrencias.model');
+
+        const ocorrencia = await Ocorrencia.findOne().lean();
+        console.log(ocorrencia);
+
+
         const totalOcorrencias = await Ocorrencia.countDocuments();
 
         const porEstado = await Ocorrencia.aggregate([
