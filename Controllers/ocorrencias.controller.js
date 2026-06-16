@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Ocorrencia = require('../Models/ocorrencias.schema');
+const Ocorrencia = require('../Models/ocorrencias.model');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
 
@@ -143,10 +143,8 @@ const deleteOcorrencia = async (req, res) => {
             return res.status(403).json({message:"Estás suspenso e não podes apagar ocorrencias"})
         }
         
-        //const query = resolveOcorrenciaQuery(req.params.id);
-        const ocorrencia = await Ocorrencia.findOne({
-            id: parseInt(req.params.id)
-        });;
+        const query = resolveOcorrenciaQuery(req.params.id);
+        const ocorrencia = await Ocorrencia.findOne(query);
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
