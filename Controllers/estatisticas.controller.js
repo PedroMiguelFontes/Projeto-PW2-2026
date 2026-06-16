@@ -11,9 +11,7 @@ const getEstatisticas = async (req, res) => {
         
         const Ocorrencia = require('../Models/ocorrencias.model');
 
-        const ocorrencia = await Ocorrencia.findOne().lean();
-        console.log(ocorrencia);
-
+        
 
         const totalOcorrencias = await Ocorrencia.countDocuments();
 
