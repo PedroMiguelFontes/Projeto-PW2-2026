@@ -203,7 +203,7 @@ const deleteOcorrencia = async (req, res) => {
         if (req.loggedUserRole == 'Utilizador' && !ocorrencia.user_id.equals(req.loggedUserId)) {
             return res.status(403).json({ message: "Apenas podes apagar ocorrencias que você criou" });
         }
-        await ocorrencia.deleteOne()
+        await ocorrencia.deleteOne(query)
         return res.status(200).json({ message: "Ocorrência apagada com sucesso" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
