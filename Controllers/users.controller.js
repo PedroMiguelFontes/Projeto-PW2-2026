@@ -63,6 +63,17 @@ const createUser = async (req, res) => {
             return res.status(400).json({message: 'O nome deve ser uma string'});
         }
 
+        if (typeof password !== 'string') {
+            return res.status(400).json({message: 'A password deve ser uma string'});
+        }
+
+        if (typeof tipo !== 'string') {
+            return res.status(400).json({message: 'O role deve ser uma string'});
+        }
+
+        if (tipo !== 'Utilizador' && tipo !== 'Funcionario' && tipo !== 'Admin') {
+            return res.status(400).json({message: 'Por favor selecione Utilizador, Funcionario ou Admin'})
+        }
 
         const nomeRegex = /^[A-Za-zÀ-ÿ\s]+$/;
         

@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 
 const comentariosSchema = new mongoose.Schema({
     ocorrencia_id: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Ocorrencia',
         required: true
     },
-    user_id: {
-        type: Number,
+     user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     texto: {

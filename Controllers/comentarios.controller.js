@@ -18,6 +18,7 @@ const getComentariosByOcorrencia = async (req, res) => {
     try {
         const { id } = req.params; 
         const comentarios = await Comentario.find({ ocorrencia_id: id });
+
         if (!comentarios) {
             return res.status(404).json({message: 'Não existem comentarios dessa ocorrencia'})
         }
