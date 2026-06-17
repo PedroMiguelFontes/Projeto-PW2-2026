@@ -51,7 +51,6 @@ const verifyToken = (req, res, next) => {
         req.loggedUserId = Number(decoded.id);
         req.loggedUserRole = decoded.tipo;
         req.loggedUserEstado = decoded.estado;
-        console.log(decoded);
         next();
     } catch (err) {
         return res.status(401).json({ success: false, msg: "Token inválido ou expirado." });
