@@ -1,8 +1,5 @@
 const mongoose = require('mongoose')
 let ocorrenciasSchema = require('../Models/ocorrencias.schema')
-let categoriaSchema = require('../Models/categorias.schema')
-let estadoSchema = require('../Models/estados.schema')
-let userSchema = require('../Models/users.schema')
 
 let ocorrencias =
 [
@@ -12,6 +9,4 @@ let ocorrencias =
 ]
 
 module.exports = mongoose.model('Ocorrencia',ocorrenciasSchema,'Ocorrencias');
-                mongoose.model('Categoria', categoriaSchema,'Categorias')
-                mongoose.model('Estado', estadoSchema,'Estados')
-                mongoose.model('User', userSchema,'Users')  
+                
