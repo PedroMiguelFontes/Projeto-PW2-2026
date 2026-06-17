@@ -9,7 +9,7 @@ const login = async (req, res) => {
             return res.status(400).json({ message: 'Email and password are required' });
         }
 
-        
+
         const user = await User.findOne({ email: email.toLowerCase() });
         if (!user) {
             return res.status(401).json({ message: 'Invalid email or password' });
@@ -48,9 +48,10 @@ const verifyToken = (req, res, next) => {
     const token = bearer[1];
     try {
         const decoded = jwt.verify(token, process.env.SECRET || 'defaultSecret');
-        req.loggedUserId = decoded.id;
+        req.loggedUserId = Number(decoded.id);
         req.loggedUserRole = decoded.tipo;
         req.loggedUserEstado = decoded.estado;
+        console.log(decoded);
         next();
     } catch (err) {
         return res.status(401).json({ success: false, msg: "Token inválido ou expirado." });
