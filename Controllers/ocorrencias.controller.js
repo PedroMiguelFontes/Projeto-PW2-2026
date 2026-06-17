@@ -3,6 +3,42 @@ const Ocorrencia = require('../Models/ocorrencias.model');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
 
+const canEditOcorrencia = (req, ocorrencia) => {
+
+    if (req.loggedUserEstado !== 'Ativo') {
+        return {
+            allowed: false,
+            message: 'Estás suspenso/não valido e não podes atualizar ocorrências'
+        };
+    }
+
+    
+    if (req.loggedUserRole === 'Admin') {
+        return { allowed: false };
+    }
+
+    if (req.loggedUserRole === 'Funcionario') {
+        return { allowed: true };
+    }
+
+    if (req.loggedUserRole === 'Utilizador') {
+        if (ocorrencia.user_id.equals(req.loggedUserId)) {
+            return { allowed: true };
+        }
+
+        return {
+            allowed: false,
+            message: 'Só podes editar ocorrências criadas por ti'
+        };
+    }
+
+    return {
+        allowed: false,
+        message: 'Sem permissões'
+    };
+};
+
+
 const resolveOcorrenciaQuery = (id) => {
     if (mongoose.Types.ObjectId.isValid(id)) {
         return { _id: id };
@@ -107,12 +143,10 @@ const createOcorrencia = async (req, res) => {
             zona,
             latitude,
             longitude,
-
-            // 🔥 ISTO É O MAIS IMPORTANTE
             user_id: req.loggedUserId,
 
             data_registo: new Date(),
-            data_resolucao: null
+            data_resolucao: new Date()
         });
 
         await newOcorrencia.save();
@@ -140,6 +174,13 @@ const updateOcorrencia = async (req, res) => {
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
+        const permission = canEditOcorrencia(req, ocorrencia);
+
+        if (!permission.allowed) {
+            return res.status(403).json({
+                message: permission.message
+            });
+        }
         Object.assign(ocorrencia, { titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
         await ocorrencia.save();
         return res.status(200).json(ocorrencia);
@@ -154,12 +195,20 @@ const updatePartialOcorrencia = async (req, res) => {
             return res.status(403).json({ message: "Apenas funcionários podem atualizar ocorrencias" });
         }
         if (req.loggedUserEstado !=='Ativo') {
-            return res.status(403).json({message:"Estás suspenso e não podes atualizar ocorrencias"})
+            return res.status(403).json({message:"Estás suspenso/não válido e não podes atualizar ocorrencias"})
         }
         const query = resolveOcorrenciaQuery(req.params.id);
         const ocorrencia = await Ocorrencia.findOne(query);
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
+        }
+
+        const permission = canEditOcorrencia(req, ocorrencia);
+
+        if (!permission.allowed) {
+            return res.status(403).json({
+                message: permission.message
+            });
         }
         const { titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao } = req.body;
         if (titulo !== undefined) ocorrencia.titulo = titulo;
@@ -196,9 +245,6 @@ const deleteOcorrencia = async (req, res) => {
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
-
-        console.log("USER LOGADO:", req.loggedUserId, typeof req.loggedUserId);
-        console.log("OCORRENCIA USER:", ocorrencia.user_id, typeof ocorrencia.user_id);
 
         if (req.loggedUserRole == 'Utilizador' && !ocorrencia.user_id.equals(req.loggedUserId)) {
             return res.status(403).json({ message: "Apenas podes apagar ocorrencias que você criou" });

@@ -93,6 +93,18 @@ const createUser = async (req, res) => {
         const nextId = (lastUser?.id || 0) + 1;
 
         const hashedPassword = await bcrypt.hash(password, 10);
+        
+        if (tipo=='Funcionario') {
+            const newUser = new User({
+            id: nextId,
+            nome,
+            email,
+            password: hashedPassword,
+            tipo,
+            estado:'Inativo'
+        });
+        }
+
         const newUser = new User({
             id: nextId,
             nome,
@@ -101,6 +113,8 @@ const createUser = async (req, res) => {
             tipo,
             estado:'Ativo'
         });
+
+        
         
 
         console.log(req.body);
