@@ -12,6 +12,6 @@ let ocorrencias =
 ]
 
 module.exports = mongoose.model('Ocorrencia',ocorrenciasSchema,'Ocorrencias');
-                mongoose.model('Categoria', categoriaSchema)
-                mongoose.model('Estado', estadoSchema)
-                mongoose.model('User', userSchema)  
+                mongoose.model('Categoria', categoriaSchema,'Categorias')
+                mongoose.model('Estado', estadoSchema,'Estados')
+                mongoose.model('User', userSchema,'Users')  
