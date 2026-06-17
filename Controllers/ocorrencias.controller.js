@@ -65,13 +65,13 @@ const createOcorrencia = async (req, res) => {
         const nextId = (lastOcorrencia?.id || 0) + 1;
 
         const {titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao} = req.body;
-        if (!titulo || !descricao || !categoria_id || !user_id || !estado_id || !prioridade || !edificio || !zona || !latitude || !longitude) {
+        if (!titulo || !descricao || !categoria_id || !estado_id || !prioridade || !edificio || !zona || !latitude || !longitude) {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
 
 
 
-        const newOcorrencia = new Ocorrencia({ id: nextId, titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
+        const newOcorrencia = new Ocorrencia({ id: nextId, titulo, descricao, categoria_id, user_id:req.loggedUserId, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
         await newOcorrencia.save();
         return res.status(201).json(newOcorrencia);
     } catch (error) {
