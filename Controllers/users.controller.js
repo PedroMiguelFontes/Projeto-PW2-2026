@@ -141,10 +141,14 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {  
-    if (req.params.id!==req.loggedUserId) {
-        return res.status(403).json({ message: 'Só pode alterar a sua própria conta.' });
-    } else {
+    
     try {
+        console.log(req.params.id)
+        console.log(req.loggedUserId)
+        if (req.params.id!==req.loggedUserId) {
+                return res.status(403).json({ message: 'Só pode alterar a sua própria conta.' });
+        }
+
         const { nome, email, password, tipo} = req.body;
         const updateData = { nome, email, tipo, updated_at: Date.now() };
         
@@ -192,7 +196,7 @@ const updateUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }}
-};
+
 
 const suspendUser = async (req, res) => {
     if (req.loggedUserRole !== 'Admin') {
