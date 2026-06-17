@@ -57,28 +57,72 @@ const getOcorrenciaById = async (req, res) => {
 
 const createOcorrencia = async (req, res) => {
     try {
+
         if (req.loggedUserRole !== 'Utilizador') {
-            return res.status(403).json({ message: "Apenas utilizadores podem criar ocorrências" });
+            return res.status(403).json({
+                message: "Apenas utilizadores podem criar ocorrências"
+            });
         }
-        if (req.loggedUserEstado !=='Ativo') {
-            return res.status(403).json({message:"Estás suspenso e não podes criar ocorrencias"})
+
+        if (req.loggedUserEstado !== 'Ativo') {
+            return res.status(403).json({
+                message: "Estás suspenso e não podes criar ocorrências"
+            });
         }
 
         const lastOcorrencia = await Ocorrencia.findOne().sort({ id: -1 });
         const nextId = (lastOcorrencia?.id || 0) + 1;
 
-        const {titulo, descricao, categoria_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao} = req.body;
-        if (!titulo || !descricao || !categoria_id || !estado_id || !prioridade || !edificio || !zona || !latitude || !longitude) {
-            return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
+        const {
+            titulo,
+            descricao,
+            categoria_id,
+            estado_id,
+            prioridade,
+            edificio,
+            zona,
+            latitude,
+            longitude
+        } = req.body;
+
+        if (
+            !titulo || !descricao || !categoria_id ||
+            !estado_id || !prioridade ||
+            !edificio || !zona ||
+            latitude == null || longitude == null
+        ) {
+            return res.status(400).json({
+                message: "Todos os campos obrigatórios devem ser preenchidos"
+            });
         }
 
+        const newOcorrencia = new Ocorrencia({
+            id: nextId,
+            titulo,
+            descricao,
+            categoria_id,
+            estado_id,
+            prioridade,
+            edificio,
+            zona,
+            latitude,
+            longitude,
 
+            // 🔥 ISTO É O MAIS IMPORTANTE
+            user_id: req.loggedUserId,
 
-        const newOcorrencia = new Ocorrencia({ id: nextId, titulo, descricao, categoria_id:req.body.categoria_id, user_id:req.loggedUserId, estado_id:req.body.estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
+            data_registo: new Date(),
+            data_resolucao: null
+        });
+
         await newOcorrencia.save();
+
         return res.status(201).json(newOcorrencia);
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({
+            message: error.message
+        });
     }
 };
 
