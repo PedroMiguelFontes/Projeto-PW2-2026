@@ -156,7 +156,7 @@ const deleteOcorrencia = async (req, res) => {
             return res.status(403).json({ message: "Apenas podes apagar ocorrencias que você criou" });
         }
         await ocorrencia.delete()
-        return res.status(200).json({ message: "Ocorrência apagada com sucesso" });*/
+        return res.status(200).json({ message: "Ocorrência apagada com sucesso" });
     } catch (error) {
         //return res.status(500).json({ message: error.message });
     }
