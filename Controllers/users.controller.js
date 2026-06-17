@@ -145,11 +145,32 @@ const updateUser = async (req, res) => {
         return res.status(403).json({ message: 'Só pode alterar a sua própria conta.' });
     } else {
     try {
-        const { nome, email, password, tipo, estado } = req.body;
-        const updateData = { nome, email, tipo, estado, updated_at: Date.now() };
+        const { nome, email, password, tipo} = req.body;
+        const updateData = { nome, email, tipo, updated_at: Date.now() };
         
-        if (typeof nome !=='string') {
-            res.status(400)
+        if (typeof nome !== 'string') {
+            return res.status(400).json({message: 'O nome deve ser uma string'});
+        }
+
+        if (typeof password !== 'string') {
+            return res.status(400).json({message: 'A password deve ser uma string'});
+        }
+
+        if (typeof tipo !== 'string') {
+            return res.status(400).json({message: 'O role deve ser uma string'});
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                message: "Formato de email inválido"
+            });
+        }
+
+        if ((tipo === 'Utilizador') && !email.endsWith('@esmad.ipp.pt')) {
+                return res.status(400).json({message: 'Estudantes/Docentes devem usar email institucional (@esmad.ipp.pt)'
+            });
         }
 
         if (password) {
