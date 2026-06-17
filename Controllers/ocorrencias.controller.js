@@ -148,10 +148,8 @@ const deleteOcorrencia = async (req, res) => {
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
-        console.log(ocorrencia.user_id, typeof ocorrencia.user_id);
-        console.log(req.loggedUserId, typeof req.loggedUserId);
 
-        if (req.loggedUserRole == 'Utilizador' && Number(req.loggedUserId)!==Number(ocorrencia.user_id)) {
+        if (req.loggedUserRole == 'Utilizador' && !ocorrencia.user_id.equals(req.loggedUserId)) {
             return res.status(403).json({ message: "Apenas podes apagar ocorrencias que você criou" });
         }
         await ocorrencia.delete()

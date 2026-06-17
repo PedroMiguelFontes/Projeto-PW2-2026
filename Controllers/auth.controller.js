@@ -48,7 +48,7 @@ const verifyToken = (req, res, next) => {
     const token = bearer[1];
     try {
         const decoded = jwt.verify(token, process.env.SECRET || 'defaultSecret');
-        req.loggedUserId = Number(decoded.id);
+        req.loggedUserId = decoded.id;
         req.loggedUserRole = decoded.tipo;
         req.loggedUserEstado = decoded.estado;
         next();
