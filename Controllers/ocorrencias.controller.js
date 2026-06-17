@@ -214,7 +214,6 @@ const updatePartialOcorrencia = async (req, res) => {
         if (titulo !== undefined) ocorrencia.titulo = titulo;
         if (descricao !== undefined) ocorrencia.descricao = descricao;
         if (categoria_id !== undefined) ocorrencia.categoria_id = categoria_id;
-        if (user_id !== undefined) ocorrencia.user_id = user_id;
         if (estado_id !== undefined) ocorrencia.estado_id = estado_id;
         if (prioridade !== undefined) ocorrencia.prioridade = prioridade;
         if (edificio !== undefined) ocorrencia.edificio = edificio;
