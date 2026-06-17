@@ -135,8 +135,9 @@ const updatePartialOcorrencia = async (req, res) => {
 };
 
 const deleteOcorrencia = async (req, res) => {
+    console.log('deleteOcorrencia chamada');
     try {
-        if (req.loggedUserRole == 'Funcionario') {
+        /*if (req.loggedUserRole == 'Funcionario') {
             return res.status(403).json({ message: "Apenas utilizadores ou administradores podem apagar ocorrencias" });
         }
         if (req.loggedUserEstado !=='Ativo') {
@@ -155,9 +156,9 @@ const deleteOcorrencia = async (req, res) => {
             return res.status(403).json({ message: "Apenas podes apagar ocorrencias que você criou" });
         }
         await ocorrencia.delete()
-        return res.status(200).json({ message: "Ocorrência apagada com sucesso" });
+        return res.status(200).json({ message: "Ocorrência apagada com sucesso" });*/
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        //return res.status(500).json({ message: error.message });
     }
 };
 
