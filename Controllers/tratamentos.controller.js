@@ -104,26 +104,53 @@ const createTratamento = async (req, res) => {
 const updateTratamento = async (req, res) => {
     try {
         if (!req.loggedUserId) {
-            return res.status(401).json({ message: "Autenticação necessária" });
-        } 
+            return res.status(401).json({
+                message: "Autenticação necessária"
+            });
+        }
+
         if (req.loggedUserRole !== 'Funcionario') {
-            return res.status(403).json({ message: "Apenas funcionários podem atualizar tratamentos" });
-        }
-        if (req.loggedUserEstado !=='Ativo') {
-            return res.status(403).json({message:"Estás suspenso e não podes atualizar tratamentos"})
+            return res.status(403).json({
+                message: "Apenas funcionários podem atualizar tratamentos"
+            });
         }
 
-        const query= resolveTratamentoQuery(req.params.id);
+        if (req.loggedUserEstado !== 'Ativo') {
+            return res.status(403).json({
+                message: "Estás suspenso e não podes atualizar tratamentos"
+            });
+        }
 
-        const {ocorrencia_id,descricao,data_prevista,data_real} = req.body;
+        const query = resolveTratamentoQuery(req.params.id);
+
+        const {
+            ocorrencia_id,
+            descricao,
+            data_prevista,
+            data_real
+        } = req.body;
+
         const tratamento = await Tratamento.findOne(query);
+
         if (!tratamento) {
-            return res.status(404).json({ message: "Tratamento não encontrado" });
+            return res.status(404).json({
+                message: "Tratamento não encontrado"
+            });
         }
+
+        tratamento.ocorrencia_id = ocorrencia_id;
+        tratamento.descricao = descricao;
+        tratamento.data_prevista = data_prevista;
+        tratamento.data_real = data_real;
+
         await tratamento.save();
+
         return res.status(200).json(tratamento);
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({
+            message: error.message
+        });
     }
 };
 
