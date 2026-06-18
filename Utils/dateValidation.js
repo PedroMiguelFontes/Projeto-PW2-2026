@@ -13,3 +13,5 @@ const isValidDateFormat = (dateString) => {
 
     return date.toISOString().slice(0, 10) === dateString;
 };
+
+module.exports=isValidDateFormat
