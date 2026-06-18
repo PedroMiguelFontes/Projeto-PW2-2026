@@ -70,7 +70,7 @@ const createTratamento = async (req, res) => {
         }
 
         const { ocorrencia_id, descricao, data_prevista, data_real } = req.body;
-        
+        console.log('BODY RECEBIDO:', req.body);
         if (!ocorrencia_id || !descricao || !data_prevista || !data_real) {
             return res.status(400).json({message: 'Todos os campos obrigatórios devem ser preenchidos'});
         }
