@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Tratamento = require('../Models/tratamentos.schema');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
-const { isValidDateFormat } = require('../utils/dateValidation');
+const { isValidDateFormat } = require('../Utils/dateValidation');
 
 
 const resolveTratamentoQuery = (id) => {
@@ -70,7 +70,7 @@ const createTratamento = async (req, res) => {
         }
 
         const { ocorrencia_id, descricao, data_prevista, data_real } = req.body;
-        console.log('BODY RECEBIDO:', req.body);
+        
         if (!ocorrencia_id || !descricao || !data_prevista || !data_real) {
             return res.status(400).json({message: 'Todos os campos obrigatórios devem ser preenchidos'});
         }
