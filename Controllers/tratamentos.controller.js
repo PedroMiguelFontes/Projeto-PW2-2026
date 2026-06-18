@@ -138,6 +138,11 @@ const updateTratamento = async (req, res) => {
             });
         }
 
+        if (!ocorrencia_id||!descricao||!data_prevista||!data_real) {
+            return res.status(400).json({message:'Por favor preencha todos os campos necessários'})
+        }
+
+        
         tratamento.ocorrencia_id = ocorrencia_id;
         tratamento.descricao = descricao;
         tratamento.data_prevista = data_prevista;
