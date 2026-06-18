@@ -143,9 +143,8 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {  
     
     try {
-        console.log(req.params.id)
-        console.log(req.loggedUserId)
-        if (Number(req.params.id)!==Number(req.loggedUserId)) {
+    
+        if (req.params.id!==req.loggedUserId) {
                 return res.status(403).json({ message: 'Só pode alterar a sua própria conta.' });
         }
 
