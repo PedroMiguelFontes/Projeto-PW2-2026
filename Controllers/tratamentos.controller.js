@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Tratamento = require('../Models/tratamentos.schema');
+const Ocorrencia = require('../Models/ocorrencias.model')
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
 const isValidDateFormat = require('../Utils/dateValidation');
@@ -70,10 +71,13 @@ const createTratamento = async (req, res) => {
         }
 
         const { ocorrencia_id, descricao, data_prevista, data_real } = req.body;
-        console.log(isValidDateFormat);
-        console.log('BODY RECEBIDO:', req.body);
+        
         if (!ocorrencia_id || !descricao || !data_prevista || !data_real) {
             return res.status(400).json({message: 'Todos os campos obrigatórios devem ser preenchidos'});
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(ocorrencia_id)) {
+            return res.status(400).json({message: "ocorrencia_id não é um ObjectId válido"});
         }
 
         if (!isValidDateFormat(data_prevista)) {
@@ -100,6 +104,8 @@ const createTratamento = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 const updateTratamento = async (req, res) => {
     try {
@@ -142,7 +148,22 @@ const updateTratamento = async (req, res) => {
             return res.status(400).json({message:'Por favor preencha todos os campos necessários'})
         }
 
-        
+        if (!ocorrencia_id || !descricao || !data_prevista || !data_real) {
+            return res.status(400).json({message: 'Todos os campos obrigatórios devem ser preenchidos'});
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(ocorrencia_id)) {
+            return res.status(400).json({message: "ocorrencia_id não é um ObjectId válido"});
+        }
+
+        if (!isValidDateFormat(data_prevista)) {
+            return res.status(400).json({message: 'data_prevista deve estar no formato AAAA-MM-DD'});
+        }
+
+        if (data_real && !isValidDateFormat(data_real)) {
+            return res.status(400).json({message: 'data_real deve estar no formato AAAA-MM-DD'});
+        }
+
         tratamento.ocorrencia_id = ocorrencia_id;
         tratamento.descricao = descricao;
         tratamento.data_prevista = data_prevista;
@@ -181,6 +202,10 @@ const updatePartialTratamento = async (req, res) => {
         if (data_prevista !== undefined) tratamento.data_prevista = data_prevista;
         if (data_real !== undefined) tratamento.data_real = data_real;
         
+        if (!mongoose.Types.ObjectId.isValid(ocorrencia_id)) {
+            return res.status(400).json({message: "ocorrencia_id não é um ObjectId válido"});
+        }
+
         if (data_prevista !== undefined && !isValidDateFormat(data_prevista)) {
             return res.status(400).json({message: 'data_prevista deve estar no formato AAAA-MM-DD'});
         }
