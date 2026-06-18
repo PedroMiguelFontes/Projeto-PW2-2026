@@ -93,7 +93,8 @@ const createTratamento = async (req, res) => {
         descricao,
         data_prevista,
         data_real
-});
+        });
+        await newTratamento.save();
         return res.status(201).json(newTratamento);
     } catch (error) {
         res.status(500).json({ message: error.message });
