@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Tratamento = require('../Models/tratamentos.schema');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
-const { isValidDateFormat } = require('../Utils/dateValidation');
+const isValidDateFormat = require('../Utils/dateValidation');
 
 
 const resolveTratamentoQuery = (id) => {
