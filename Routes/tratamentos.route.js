@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const verifyToken = require('../Controllers/auth.controller').verifyToken;
+const verifyToken = require('../Controllers/auth.controller');
 const { getAllTratamentos, searchTratamentos, getTratamentoById, createTratamento, updateTratamento, updatePartialTratamento, deleteTratamento } = require('../Controllers/tratamentos.controller');
 
 router.get('/', getAllTratamentos);
