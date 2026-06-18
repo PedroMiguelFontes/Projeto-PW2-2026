@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Tratamento = require('../Models/tratamentos.schema');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
+const { isValidDateFormat } = require('../utils/dateValidation');
+
 
 const resolveTratamentoQuery = (id) => {
     if (mongoose.Types.ObjectId.isValid(id)) {
@@ -16,7 +18,9 @@ const resolveTratamentoQuery = (id) => {
 
 const getAllTratamentos = async (req, res) => {
     try {
-        const tratamentos = await Tratamento.find();
+        const tratamentos = await Tratamento.find()
+        .populate('ocorrencia_id', 'id titulo')
+        .populate('funcionario_id', 'id nome email');
         return res.status(200).json(tratamentos);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -28,7 +32,9 @@ const searchTratamentos = async (req, res) => {
         const { field, value } = req.query;
         const query = {};
         query[field] = value;
-        const tratamentos = await Tratamento.find(query);
+        const tratamentos = await Tratamento.find(query)
+        .populate('ocorrencia_id', 'id titulo')
+        .populate('funcionario_id', 'id nome email');;
         if (!tratamentos || tratamentos.length === 0) {
             return res.status(404).json({ message: "Tratamento não encontrado" });
         }
@@ -64,13 +70,28 @@ const createTratamento = async (req, res) => {
         }
 
         const { ocorrencia_id, funcionario_id, descricao, data_prevista, data_real } = req.body;
-        if (!ocorrencia_id || !funcionario_id || !descricao || !data_prevista || !data_real) {
-            return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
+        if (!ocorrencia_id || !descricao || !data_prevista) {
+            return res.status(400).json({message: 'Todos os campos obrigatórios devem ser preenchidos'});
         }
+
+        if (!isValidDateFormat(data_prevista)) {
+            return res.status(400).json({message: 'data_prevista deve estar no formato AAAA-MM-DD'});
+        }
+
+        if (data_real && !isValidDateFormat(data_real)) {
+            return res.status(400).json({message: 'data_real deve estar no formato AAAA-MM-DD'});
+        }
+
         const lastTratamento = await Tratamento.findOne().sort({ id: -1 });
         const nextId = (lastTratamento?.id || 0) + 1;
-        const newTratamento = new Tratamento({ id: nextId, ocorrencia_id, funcionario_id, descricao, data_prevista, data_real });
-        await newTratamento.save();
+        const newTratamento = new Tratamento({
+        id: nextId,
+        ocorrencia_id,
+        funcionario_id: req.loggedUserId,
+        descricao,
+        data_prevista,
+        data_real
+});
         return res.status(201).json(newTratamento);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -91,12 +112,11 @@ const updateTratamento = async (req, res) => {
 
         const query= resolveTratamentoQuery(req.params.id);
 
-        const { ocorrencia_id, funcionario_id, descricao, data_prevista, data_real } = req.body;
+        const {ocorrencia_id,descricao,data_prevista,data_real} = req.body;
         const tratamento = await Tratamento.findOne(query);
         if (!tratamento) {
             return res.status(404).json({ message: "Tratamento não encontrado" });
         }
-        Object.assign(tratamento, { ocorrencia_id, funcionario_id, descricao, data_prevista, data_real });
         await tratamento.save();
         return res.status(200).json(tratamento);
     } catch (error) {
@@ -114,18 +134,26 @@ const updatePartialTratamento = async (req, res) => {
         }
         if (req.loggedUserEstado !=='Ativo') {
             return res.status(403).json({message:"Estás suspenso e não podes atualizar tratamentos"})
-        }
+        } 
         const query = resolveTratamentoQuery(req.params.id);
         const tratamento = await Tratamento.findOne(query);
         if (!tratamento) {
             return res.status(404).json({ message: "Tratamento não encontrado" });
         }
-        const { ocorrencia_id, funcionario_id, descricao, data_prevista, data_real } = req.body;
+        const { ocorrencia_id, descricao, data_prevista, data_real } = req.body;
         if (ocorrencia_id !== undefined) tratamento.ocorrencia_id = ocorrencia_id;
-        if (funcionario_id !== undefined) tratamento.funcionario_id = funcionario_id;
         if (descricao !== undefined) tratamento.descricao = descricao;
         if (data_prevista !== undefined) tratamento.data_prevista = data_prevista;
         if (data_real !== undefined) tratamento.data_real = data_real;
+        
+        if (data_prevista !== undefined && !isValidDateFormat(data_prevista)) {
+            return res.status(400).json({message: 'data_prevista deve estar no formato AAAA-MM-DD'});
+        }
+
+        if (data_real !== undefined &&!isValidDateFormat(data_real)) {
+            return res.status(400).json({message: 'data_real deve estar no formato AAAA-MM-DD'});
+        }
+
         await tratamento.save();
         return res.status(200).json(tratamento);
     } catch (error) {

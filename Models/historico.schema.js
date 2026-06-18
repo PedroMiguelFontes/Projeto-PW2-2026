@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const occurrenceHistorySchema = new mongoose.Schema({
     ocorrencia: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Occurrence',
+        ref: 'Occurrencia',
         required: true
     },
 
