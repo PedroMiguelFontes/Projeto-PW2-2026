@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const verifyToken = require('../Controllers/auth.controller').verifyToken;
+const { verifyToken } = require('../Controllers/auth.controller');
 const { getAllOcorrencias, searchOcorrencias, getOcorrenciaById, createOcorrencia, updateOcorrencia, updatePartialOcorrencia, deleteOcorrencia } = require('../Controllers/ocorrencias.controller');
 
 router.get('/', getAllOcorrencias);
