@@ -69,8 +69,8 @@ const createTratamento = async (req, res) => {
             return res.status(403).json({message:"Estás suspenso e não podes criar tratamentos"})
         }
 
-        const { ocorrencia_id, funcionario_id, descricao, data_prevista, data_real } = req.body;
-        if (!ocorrencia_id || !descricao || !data_prevista) {
+        const { ocorrencia_id, descricao, data_prevista, data_real } = req.body;
+        if (!ocorrencia_id || !descricao || !data_prevista || !data_real) {
             return res.status(400).json({message: 'Todos os campos obrigatórios devem ser preenchidos'});
         }
 
