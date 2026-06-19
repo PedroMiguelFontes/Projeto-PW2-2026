@@ -62,7 +62,6 @@ app.use('/api/ocorrencias/:id/imagens', imagensRoutes);
 app.use('/api/estados', estadosRoutes);
 app.use('/api/tratamentos', tratamentosRoutes);
 app.use('/api/estatisticas', estatisticasRoutes);
-app.use('/api/historico', historicoRoutes)
 
 // Start server
 app.listen(PORT, () => {
