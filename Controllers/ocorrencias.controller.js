@@ -166,11 +166,11 @@ const createOcorrencia = async (req, res) => {
             return res.status(400).json({message:'Zona tem de ser um string'})
         }
 
-        if (typeof latitude !== 'string') {
+        if (typeof latitude !== 'number') {
             return res.status(400).json({message:'Latitude tem de ser um number'})
         }
 
-        if (typeof longitude !== 'string') {
+        if (typeof longitude !== 'number') {
             return res.status(400).json({message:'Longitude tem de ser um numero'})
         }
 
@@ -238,12 +238,53 @@ const updateOcorrencia = async (req, res) => {
     
         const query = resolveOcorrenciaQuery(req.params.id);
         const oldOcorrencia = await Ocorrencia.findOne(query);
-        const { titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao } = req.body;
+        const { titulo, descricao, categoria_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao } = req.body;
         const ocorrencia = await Ocorrencia.findOne(query);
         const beforeUpdate = oldOcorrencia.toObject();
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
+
+        if (typeof titulo !== 'string') {
+            return res.status(400).json({message:'Titulo tem de ser um string'})
+        }
+
+        if (typeof descricao !== 'string') {
+            return res.status(400).json({message:'Descrição tem de ser um string'})
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(categoria_id)) {
+            return res.status(400).json({
+                message: 'categoria_id inválido'
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(estado_id)) {
+            return res.status(400).json({
+                message: 'estado_id inválido'
+            });
+        }
+
+        if (prioridade !== 'baixa' || prioridade !== 'media' || prioridade !== 'alta') {
+            return res.status(400).json({message:'Prioridade não válida'})
+        }
+
+        if (typeof edifico !== 'string') {
+            return res.status(400).json({message:'Edificio tem de ser um string'})
+        }
+
+        if (typeof zona !== 'string') {
+            return res.status(400).json({message:'Zona tem de ser um string'})
+        }
+
+        if (typeof latitude !== 'number') {
+            return res.status(400).json({message:'Latitude tem de ser um number'})
+        }
+
+        if (typeof longitude !== 'number') {
+            return res.status(400).json({message:'Longitude tem de ser um numero'})
+        }
+
         const permission = canEditOcorrencia(req, ocorrencia);
 
         if (!permission.allowed) {
@@ -254,7 +295,7 @@ const updateOcorrencia = async (req, res) => {
         Object.assign(oldOcorrencia, {titulo,
         descricao,
         categoria_id,
-        user_id,
+        user_id: req.loggedUserId,
         estado_id,
         prioridade,
         edificio,
