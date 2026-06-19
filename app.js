@@ -16,7 +16,7 @@ const imagensRoutes = require('./Routes/imagens.route');
 const estadosRoutes = require('./Routes/estados.route');
 const tratamentosRoutes = require('./Routes/tratamentos.route');
 const estatisticasRoutes = require('./Routes/estatisticas.route')
-const historicoRoutes = require('./Routes/historico.route')
+
 
 // MongoDB Connection: prefer explicit MONGODB_URI, otherwise build from DB_* env vars with URL-encoding
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME } = process.env;
