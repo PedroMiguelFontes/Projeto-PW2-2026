@@ -24,57 +24,6 @@ const getAllCategorias = async (req, res) => {
     }
 };
 
-const createOcorrencia = async (req, res) => {
-    try {
-
-        const {
-            
-        } = req.body;
-
-        const validations = [
-            validateObjectId(categoria_id, 'categoria_id'),
-            validateObjectId(user_id, 'user_id'),
-            validateObjectId(estado_id, 'estado_id')
-        ].filter(Boolean);
-
-        if (validations.length > 0) {
-            return res.status(400).json({ errors: validations });
-        }
-
-        const checks = await Promise.all([
-            checkExists(Categoria, categoria_id, 'Categoria'),
-            checkExists(User, user_id, 'User'),
-            checkExists(Estado, estado_id, 'Estado')
-        ]);
-
-        const errors = checks.filter(Boolean);
-
-        if (errors.length > 0) {
-            return res.status(404).json({ errors });
-        }
-
-        const ocorrencia = new Ocorrencia({
-            titulo,
-            descricao,
-            categoria_id,
-            user_id,
-            estado_id,
-            prioridade,
-            edificio,
-            zona,
-            latitude,
-            longitude
-        });
-
-        await ocorrencia.save();
-
-        return res.status(201).json(ocorrencia);
-
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
-
 const updateCategoria = async (req, res) => {
     try { 
         if (req.loggedUserRole !== 'Admin') {

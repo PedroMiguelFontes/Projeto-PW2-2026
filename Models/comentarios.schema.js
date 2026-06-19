@@ -15,10 +15,6 @@ const comentariosSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    data_comentario: {
-        type: Date,
-        default: Date.now
-    },
     estado: {
         type: String,
         enum: ['Visivel', 'Indevido'],

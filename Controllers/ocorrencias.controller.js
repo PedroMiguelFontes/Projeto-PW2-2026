@@ -134,6 +134,63 @@ const createOcorrencia = async (req, res) => {
             });
         }
 
+        if (typeof titulo !== 'string') {
+            return res.status(400).json({message:'Titulo tem de ser um string'})
+        }
+
+        if (typeof descricao !== 'string') {
+            return res.status(400).json({message:'Descrição tem de ser um string'})
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(categoria_id)) {
+            return res.status(400).json({
+                message: 'categoria_id inválido'
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(estado_id)) {
+            return res.status(400).json({
+                message: 'estado_id inválido'
+            });
+        }
+
+        if (prioridade !== 'baixa' || prioridade !== 'media' || prioridade !== 'alta') {
+            return res.status(400).json({message:'Prioridade não válida'})
+        }
+
+        if (typeof edifico !== 'string') {
+            return res.status(400).json({message:'Edificio tem de ser um string'})
+        }
+
+        if (typeof zona !== 'string') {
+            return res.status(400).json({message:'Zona tem de ser um string'})
+        }
+
+        if (typeof latitude !== 'string') {
+            return res.status(400).json({message:'Latitude tem de ser um number'})
+        }
+
+        if (typeof longitude !== 'string') {
+            return res.status(400).json({message:'Longitude tem de ser um numero'})
+        }
+
+        const categoria = await Categoria.findById(categoria_id);
+
+        if (!categoria) {
+            return res.status(404).json({
+                message: 'Categoria não encontrada'
+            });
+        }
+
+        const estado = await Estado.findById(estado_id);
+
+        if (!estado) {
+            return res.status(404).json({
+                message: 'Estado não encontrado'
+            });
+        } 
+
+
         const newOcorrencia = new Ocorrencia({
             id: nextId,
             titulo,

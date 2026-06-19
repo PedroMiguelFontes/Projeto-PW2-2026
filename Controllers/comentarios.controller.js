@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Comentario = require('../Models/comentarios.schema');
-
+const Ocorrencia = require('../Models/ocorrencias.schema')
 
 const resolveUserQuery = (id) => {
     if (mongoose.Types.ObjectId.isValid(id)) {
@@ -30,7 +30,7 @@ const getComentariosByOcorrencia = async (req, res) => {
 
 const createComentario = async (req, res) => {
     try {
-        const { id } = req.params; 
+        const { ocorrencia_id } = req.params; 
         const { user_id, texto } = req.body;
 
         if (req.loggedUserRole!='Utilizador') {
@@ -43,6 +43,11 @@ const createComentario = async (req, res) => {
             texto,
             estado:"Visivel"
         });
+
+        if (!user_id || !texto) {
+            return res.status(400).json({message:'Por favor insira todos os campos obrigatorios'})
+        }
+        
 
         const comentarioSalvo = await novoComentario.save();
         res.status(201).json(comentarioSalvo);
@@ -98,12 +103,22 @@ const updateComentario = async (req, res) => {
 }
 
 const sinalizarComentario = async (req, res) => {
-    if (req.loggedUserRole !== 'Utilizador' || req.loggedUserRole !=='Funcionario') {
-        return res.status(403).json({ message: 'Não tem permissões para sinalizar esse comentario.' });
-    }
+    
     try {
         const query = resolveComentarioQuery(req.params.id);
         const updatedComentario = await Comentario.findOne(query)
+        const ocorrencia = await Ocorrencia.findById(
+            comentario.ocorrencia_id
+        );
+
+        if (req.loggedUserRole !== 'Utilizador' || req.loggedUserRole !=='Funcionario') {
+            return res.status(403).json({ message: 'Não tem permissões para sinalizar esse comentario.' });
+        }   
+
+
+        if ( req.loggedUserRole === 'Utilizador' && !ocorrencia.user_id.equals(req.loggedUserId)) {
+            return res.status(403).json({message: 'Só podes sinalizar comentários das tuas ocorrências'});
+        }
 
         if (!updatedComentario) {
             res.status(404).json({ message: "Comentario não existe" });

@@ -47,8 +47,8 @@ const createEstado = async (req, res) => {
 
 const updateEstado = async (req, res) => {
     try { 
-        if (req.loggedUserRole !== 'Funcionario') {
-            return res.status(403).json({ message: "Apenas funcionários podem atualizar estados" });
+        if (req.loggedUserRole !== 'Admin') {
+            return res.status(403).json({ message: "Apenas admins podem atualizar estados" });
         }
         const query = resolveEstadoQuery(req.params.id);
         const { ocorrencia_id,url } = req.body;
