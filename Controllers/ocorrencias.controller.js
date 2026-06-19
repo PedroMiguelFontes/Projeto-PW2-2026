@@ -3,7 +3,7 @@ const Ocorrencia = require('../Models/ocorrencias.model');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
 const isValidDateFormat = require('../Utils/dateValidation');
-const { createHistory } = require('../utils/history');
+const { createHistory } = require('../Utils/history');
 
 const canEditOcorrencia = (req, ocorrencia) => {
 
