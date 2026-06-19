@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const occurrenceHistorySchema = new mongoose.Schema({
+const occurrenciaHistorySchema = new mongoose.Schema({
     ocorrencia: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Occurrencia',
+        ref: 'Occorrencia',
         required: true
     },
 
@@ -34,4 +34,4 @@ const occurrenceHistorySchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Historico', occurrenceHistorySchema, 'Historico');
+module.exports = mongoose.model('Historico', occurrenciaHistorySchema, 'Historico');

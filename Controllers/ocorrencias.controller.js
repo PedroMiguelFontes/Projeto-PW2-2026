@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Ocorrencia = require('../Models/ocorrencias.model');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
+const isValidDateFormat = require('../Utils/dateValidation');
+const { createHistory } = require('../utils/history');
 
 const canEditOcorrencia = (req, ocorrencia) => {
 
@@ -151,6 +153,14 @@ const createOcorrencia = async (req, res) => {
 
         await newOcorrencia.save();
 
+        await createHistory({
+            ocorrenciaId: ocorrencia._id,
+            userId: req.loggedUserId,
+            campo: "CREATE",
+            oldValue: null,
+            newValue: ocorrencia
+        });
+
         return res.status(201).json(newOcorrencia);
 
     } catch (error) {
@@ -168,9 +178,12 @@ const updateOcorrencia = async (req, res) => {
         if (req.loggedUserEstado !=='Ativo') {
             return res.status(403).json({message:"Estás suspenso e não podes atualizar ocorrencias"})
         }
+    
         const query = resolveOcorrenciaQuery(req.params.id);
+        const oldOcorrencia = await Ocorrencia.findOne(query);
         const { titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao } = req.body;
         const ocorrencia = await Ocorrencia.findOne(query);
+        const beforeUpdate = oldOcorrencia.toObject();
         if (!ocorrencia) {
             return res.status(404).json({ message: "Ocorrência não encontrada" });
         }
@@ -181,13 +194,57 @@ const updateOcorrencia = async (req, res) => {
                 message: permission.message
             });
         }
-        Object.assign(ocorrencia, { titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
+        Object.assign(oldOcorrencia, {titulo,
+        descricao,
+        categoria_id,
+        user_id,
+        estado_id,
+        prioridade,
+        edificio,
+        zona,
+        latitude,
+        longitude,
+        data_registo,
+        data_resolucao
+    });
+
+        const campos = [
+    'titulo',
+    'descricao',
+    'categoria_id',
+    'user_id',
+    'estado_id',
+    'prioridade',
+    'edificio',
+    'zona',
+    'latitude',
+    'longitude',
+    'data_registo',
+    'data_resolucao'
+    ];
+
+    for (const campo of campos) {
+        const oldValue = beforeUpdate[campo];
+        const newValue = oldOcorrencia[campo];
+
+    
+    if (String(oldValue) !== String(newValue)) {
+        await Historico.create({
+            ocorrencia: oldOcorrencia._id,
+            alteradoPor: req.loggedUserId,
+            campo,
+            valorAntigo: oldValue,
+            valorNovo: newValue
+        });
+    }
+}
+
         await ocorrencia.save();
         return res.status(200).json(ocorrencia);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
+};          
 
 const updatePartialOcorrencia = async (req, res) => {
     try {
@@ -222,6 +279,24 @@ const updatePartialOcorrencia = async (req, res) => {
         if (longitude !== undefined) ocorrencia.longitude = longitude;
         if (data_registo !== undefined) ocorrencia.data_registo = data_registo;
         if (data_resolucao !== undefined) ocorrencia.data_resolucao = data_resolucao;
+
+        const fields = req.body;
+
+    for (const key in fields) {
+        if (ocorrencia[key] !== undefined && ocorrencia[key] !== fields[key]) {
+
+            await createHistory({
+                ocorrenciaId: ocorrencia._id,
+                userId: req.loggedUserId,
+                campo: key,
+                oldValue: ocorrencia[key],
+                newValue: fields[key]
+            });
+
+            ocorrencia[key] = fields[key];
+        }
+    }
+
         await ocorrencia.save();
         return res.status(200).json(ocorrencia);
     } catch (error) {
@@ -248,6 +323,15 @@ const deleteOcorrencia = async (req, res) => {
         if (req.loggedUserRole == 'Utilizador' && !ocorrencia.user_id.equals(req.loggedUserId)) {
             return res.status(403).json({ message: "Apenas podes apagar ocorrencias que você criou" });
         }
+
+        await createHistory({
+            ocorrenciaId: ocorrencia._id,
+            userId: req.loggedUserId,
+            campo: "DELETE",
+            oldValue: ocorrencia,
+            newValue: null
+        });
+
         await ocorrencia.deleteOne(query)
         return res.status(200).json({ message: "Ocorrência apagada com sucesso" });
     } catch (error) {

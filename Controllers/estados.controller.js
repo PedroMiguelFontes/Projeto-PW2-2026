@@ -26,8 +26,8 @@ const getAllEstados = async (req, res) => {
 
 const createEstado = async (req, res) => {
     try {
-        if (req.loggedUserRole !== 'Utilizador') {
-            return res.status(403).json({ message: "Apenas utilizadores podem criar estados" });
+        if (req.loggedUserRole !== 'Admin') {
+            return res.status(403).json({ message: "Apenas admins podem criar estados" });
         }
 
         const lastEstado = await Estado.findOne().sort({ id: -1 });

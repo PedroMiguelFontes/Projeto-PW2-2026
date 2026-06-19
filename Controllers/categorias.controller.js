@@ -24,31 +24,61 @@ const getAllCategorias = async (req, res) => {
     }
 };
 
-const createCategoria = async (req, res) => {
+const createOcorrencia = async (req, res) => {
     try {
-        if (req.loggedUserRole !== 'Utilizador') {
-            return res.status(403).json({ message: "Apenas utilizadores podem criar categorias" });
+
+        const {
+            
+        } = req.body;
+
+        const validations = [
+            validateObjectId(categoria_id, 'categoria_id'),
+            validateObjectId(user_id, 'user_id'),
+            validateObjectId(estado_id, 'estado_id')
+        ].filter(Boolean);
+
+        if (validations.length > 0) {
+            return res.status(400).json({ errors: validations });
         }
 
-        const lastCategoria = await Categoria.findOne().sort({ id: -1 });
-        const nextId = (lastCategoria?.id || 0) + 1;
+        const checks = await Promise.all([
+            checkExists(Categoria, categoria_id, 'Categoria'),
+            checkExists(User, user_id, 'User'),
+            checkExists(Estado, estado_id, 'Estado')
+        ]);
 
-        const {titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao} = req.body;
-        if (!titulo || !descricao || !categoria_id || !user_id || !estado_id || !prioridade || !edificio || !zona || !latitude || !longitude) {
-            return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
+        const errors = checks.filter(Boolean);
+
+        if (errors.length > 0) {
+            return res.status(404).json({ errors });
         }
-        const newCategoria = new Categoria({ id: nextId, titulo, descricao, categoria_id, user_id, estado_id, prioridade, edificio, zona, latitude, longitude, data_registo, data_resolucao });
-        await newCategoria.save();
-        return res.status(201).json(newCategoria);
+
+        const ocorrencia = new Ocorrencia({
+            titulo,
+            descricao,
+            categoria_id,
+            user_id,
+            estado_id,
+            prioridade,
+            edificio,
+            zona,
+            latitude,
+            longitude
+        });
+
+        await ocorrencia.save();
+
+        return res.status(201).json(ocorrencia);
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
 const updateCategoria = async (req, res) => {
     try { 
-        if (req.loggedUserRole !== 'Funcionario') {
-            return res.status(403).json({ message: "Apenas funcionários podem atualizar categorias" });
+        if (req.loggedUserRole !== 'Admin') {
+            return res.status(403).json({ message: "Apenas admins podem atualizar categorias" });
         }
         const query = resolveCategoriaQuery(req.params.id);
         const { ocorrencia_id,url } = req.body;
