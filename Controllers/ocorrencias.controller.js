@@ -154,7 +154,7 @@ const createOcorrencia = async (req, res) => {
             });
         }
 
-        if (prioridade !== 'baixa' || prioridade !== 'media' || prioridade !== 'alta') {
+        if (prioridade !== 'baixa' && prioridade !== 'media' && prioridade !== 'alta') {
             return res.status(400).json({message:'Prioridade não válida'})
         }
 
