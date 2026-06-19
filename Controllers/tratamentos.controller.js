@@ -76,6 +76,10 @@ const createTratamento = async (req, res) => {
             return res.status(400).json({message: 'Todos os campos obrigatórios devem ser preenchidos'});
         }
 
+        if (typeof descricao !=='string') {
+            return res.status(400).json({message:'Descrição tem de ser um string'})
+        }
+
         if (!mongoose.Types.ObjectId.isValid(ocorrencia_id)) {
             return res.status(400).json({message: "ocorrencia_id não é um ObjectId válido"});
         }
@@ -148,6 +152,10 @@ const updateTratamento = async (req, res) => {
             return res.status(400).json({message:'Por favor preencha todos os campos necessários'})
         }
 
+        if (typeof descricao !=='string') {
+            return res.status(400).json({message:'Descrição tem de ser um string'})
+        }
+
         if (!ocorrencia_id || !descricao || !data_prevista || !data_real) {
             return res.status(400).json({message: 'Todos os campos obrigatórios devem ser preenchidos'});
         }
@@ -202,6 +210,10 @@ const updatePartialTratamento = async (req, res) => {
         if (data_prevista !== undefined) tratamento.data_prevista = data_prevista;
         if (data_real !== undefined) tratamento.data_real = data_real;
         
+        if (descricao && typeof descricao !=='string') {
+            return res.status(400).json({message:'Descrição tem de ser um string'})
+        }
+
         if (!mongoose.Types.ObjectId.isValid(ocorrencia_id)) {
             return res.status(400).json({message: "ocorrencia_id não é um ObjectId válido"});
         }

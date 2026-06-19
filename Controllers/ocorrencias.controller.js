@@ -378,22 +378,65 @@ const updatePartialOcorrencia = async (req, res) => {
         if (data_registo !== undefined) ocorrencia.data_registo = data_registo;
         if (data_resolucao !== undefined) ocorrencia.data_resolucao = data_resolucao;
 
+
+        if (titulo && typeof titulo !== 'string') {
+            return res.status(400).json({message:'Titulo tem de ser um string'})
+        }
+
+        if (descricao && typeof descricao !== 'string') {
+            return res.status(400).json({message:'Descrição tem de ser um string'})
+        }
+
+        if (categoria_id && !mongoose.Types.ObjectId.isValid(categoria_id)) {
+            return res.status(400).json({
+                message: 'categoria_id inválido'
+            });
+        }
+
+        if (estado_id && !mongoose.Types.ObjectId.isValid(estado_id)) {
+            return res.status(400).json({
+                message: 'estado_id inválido'
+            });
+        }
+
+        if (prioridade && prioridade !== 'baixa' || prioridade !== 'media' || prioridade !== 'alta') {
+            return res.status(400).json({message:'Prioridade não válida'})
+        }
+
+        if (edificio && typeof edifico !== 'string') {
+            return res.status(400).json({message:'Edificio tem de ser um string'})
+        }
+
+        if (zona && typeof zona !== 'string') {
+            return res.status(400).json({message:'Zona tem de ser um string'})
+        }
+
+        if (latitude && typeof latitude !== 'number') {
+            return res.status(400).json({message:'Latitude tem de ser um number'})
+        }
+
+        if (longitude && typeof longitude !== 'number') {
+            return res.status(400).json({message:'Longitude tem de ser um numero'})
+        }
+
+
+
         const fields = req.body;
 
-    for (const key in fields) {
-        if (ocorrencia[key] !== undefined && ocorrencia[key] !== fields[key]) {
+        for (const key in fields) {
+            if (ocorrencia[key] !== undefined && ocorrencia[key] !== fields[key]) {
 
-            await createHistory({
-                ocorrenciaId: ocorrencia._id,
-                userId: req.loggedUserId,
-                campo: key,
-                oldValue: ocorrencia[key],
-                newValue: fields[key]
-            });
+                await createHistory({
+                    ocorrenciaId: ocorrencia._id,
+                    userId: req.loggedUserId,
+                    campo: key,
+                    oldValue: ocorrencia[key],
+                    newValue: fields[key]
+                });
 
-            ocorrencia[key] = fields[key];
+                ocorrencia[key] = fields[key];
+            }
         }
-    }
 
         await ocorrencia.save();
         return res.status(200).json(ocorrencia);
