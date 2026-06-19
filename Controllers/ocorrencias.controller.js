@@ -158,7 +158,7 @@ const createOcorrencia = async (req, res) => {
             return res.status(400).json({message:'Prioridade não válida'})
         }
 
-        if (typeof edifico !== 'string') {
+        if (typeof edificio !== 'string') {
             return res.status(400).json({message:'Edificio tem de ser um string'})
         }
 
