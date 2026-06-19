@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Ocorrencia = require('../Models/ocorrencias.model');
+const Categoria = require('../Models/categorias.model');
 const bcrypt = require('bcryptjs');
 const verifyToken = require('./auth.controller').verifyToken;
 const isValidDateFormat = require('../Utils/dateValidation');
